@@ -17,12 +17,12 @@ import EmpresaForm from "../pages/empresas/EmpresaForm";
 Helpers
 =======
 */
-// Labels de los formularios de login, registro de usuario y empresa
+/* Labels de los formularios de login, registro de usuario y empresa */
 const loginLabels = [/Nombre de usuario/, /Contraseña/];
 const registroUsuarioLabels = [/Nombre de usuario/, /Correo electrónico/, /Contraseña/];
 const registroEmpresaLabels = [/Nombre de la empresa/, /Calle/, /Comuna/, /Región/, /Teléfono/, /Correo corporativo/]
 
-// Datos de prueba
+/* Datos de prueba */
 const usuarioData = {
     nombre_usuario: "prueba_cp07",
     contrasena_hash: "Prueba123!",
@@ -62,7 +62,8 @@ const empresaFormData = {
     correo: empresaData.correo,
 };
 
-// Funciones
+/* Funciones */
+// Definicion de mock de axios para endpoints
 vi.mock("../lib/api.jsx", () => ({
     api: {
         post: vi.fn().mockResolvedValue({ data: {} }),
@@ -90,11 +91,12 @@ vi.mock("../lib/api.jsx", () => ({
     setAuthToken: vi.fn()
 }));
 
+// Definicion de mock para componente toast
 vi.mock("sonner", () => ({
   toast: { success: vi.fn(), error: vi.fn() },
 }));
 
-// Las rutas en las que se navegara durante la prueba
+// Funcion que renderiza enrutador de React Router
 const renderizador = () => {
     render(
         <AuthProvider>
@@ -117,19 +119,21 @@ const renderizador = () => {
     );
 };
 
+// Helpers de metodos de React Testing Library
 const getByRole = (rol, opcion) => screen.getByRole(rol, {name: opcion});
 const getByLabelText = (textoLabel) => screen.getByLabelText(textoLabel);
 const getByTestId = (textoTestId) => screen.getByTestId(textoTestId);
 
 const findByRole = async(rol, opcion) => await screen.findByRole(rol, {name: opcion});
 
+// Helpers para registros de usuario y contrasena
 const registroUsuario = async() => {
     // Ingresa el texto en los inputs
     for(let i = 0; i < registroUsuarioLabels.length; i++) {
         await userEvent.type(getByLabelText(registroUsuarioLabels[i]), Object.values(usuarioFormData)[i]);
     }
     
-    // Presiona el boton para crear usuario
+    // Presiona boton para crear usuario
     await userEvent.click(getByRole("button", "Continuar"));
 };
 
@@ -139,17 +143,18 @@ const registroEmpresa = async() => {
         await userEvent.type(getByLabelText(registroEmpresaLabels[i]), Object.values(empresaFormData)[i]);
     }
     
-    // Presiona el boton para crear usuario
+    // Presiona boton para crear empresa y cuenta
     await userEvent.click(getByRole("button", "Crear cuenta"));
 };
 
+// Helper para iniciar sesion
 const inicioSesion = async() => {
    // Ingresa el texto en los inputs
     for(let i = 0; i < loginLabels.length; i++) {
         await userEvent.type(getByLabelText(loginLabels[i]), Object.values(loginData)[i]);
     }
     
-    // Presiona el boton para crear usuario
+    // Presiona el boton para iniciar sesion
     await userEvent.click(getByRole("button", "Entrar"));
 };
 
@@ -159,6 +164,7 @@ Pruebas
 =======
 */
 describe("CP-16: Acceso al dashboard y administración de los datos de la empresa", () => {
+    // Antes de cada test, se limpian los mocks y el localStorage
     beforeEach(() => {
         vi.clearAllMocks();
         localStorage.clear();
@@ -256,7 +262,7 @@ describe("CP-16: Acceso al dashboard y administración de los datos de la empres
 
         expect(toast.success).toHaveBeenCalledWith("Sesión iniciada");
 
-        // Debe estar en el Home donde esta el Dashboard
+        // Llegada al Dashboard y navegacion a vista de edicion de empresa
         const encabezado = await findByRole("heading", /Bienvenido/);
 
         expect(encabezado).toHaveTextContent(
@@ -267,6 +273,7 @@ describe("CP-16: Acceso al dashboard y administración de los datos de la empres
 
         expect(await findByRole("heading", /Editar Información de la Empresa/)).toBeInTheDocument();
 
+        // Actualizacion de campo de nombre de empresa
         const empresaNombreUpdated = "Empresa CP-16 Actualizado";
 
         await userEvent.clear(getByTestId("input-empresa-nombre"));
