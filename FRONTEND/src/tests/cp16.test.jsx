@@ -24,9 +24,9 @@ const registroEmpresaLabels = [/Nombre de la empresa/, /Calle/, /Comuna/, /RegiÃ
 
 /* Datos de prueba */
 const usuarioData = {
-    nombre_usuario: "prueba_cp07",
+    nombre_usuario: "Test CP-16",
     contrasena_hash: "Prueba123!",
-    correo: "prueba_cp07@test.cl"
+    correo: "cp16@test.cl"
 };
 
 const usuarioFormData = {
@@ -47,10 +47,10 @@ const direccionData = {
 };
 
 const empresaData = {
-    nombre: "Empresa CP07",
+    nombre: "Empresa CP-16",
     direccion: `${direccionData.calle}, ${direccionData.comuna}, ${direccionData.region}`,
     telefono: "912345678",
-    correo: "empresa@test.cl",
+    correo: "empresa_cp16@test.cl",
 };
 
 const empresaFormData = {
@@ -126,7 +126,7 @@ const getByTestId = (textoTestId) => screen.getByTestId(textoTestId);
 
 const findByRole = async(rol, opcion) => await screen.findByRole(rol, {name: opcion});
 
-// Helpers para registros de usuario y contrasena
+// Helpers para registros de usuario y empresa
 const registroUsuario = async() => {
     // Ingresa el texto en los inputs
     for(let i = 0; i < registroUsuarioLabels.length; i++) {
