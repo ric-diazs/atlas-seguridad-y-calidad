@@ -1,23 +1,10 @@
 const request = require("supertest");
 const app = require("../src/app");
 
-const usuarioAdminData = {
-    nombre_usuario: "Usuario Admin CP-18",
-    contrasena_hash: "Prueba123!",
-    correo: "cp18_admin@test.cl"
-};
-
-const direccionEmpresa = {
-    calle: "Av. CP-18",
-    comuna: "Santiago",
-    region: "Metropolitana"
-};
-
-const empresaAdminData = {
-    nombre: "Empresa Test CP-18",
-    direccion: `${direccionEmpresa.calle}, ${direccionEmpresa.comuna}, ${direccionEmpresa.region}`,
-    telefono: "+56299911113",
-    correo: "test_cp18@test.cl"
+// Datos de prueba
+const loginData = {
+    nombre_usuario: "admin",
+    password: "admin"
 };
 
 const usuarioEditorData = {
@@ -27,29 +14,19 @@ const usuarioEditorData = {
     rol_id: 2
 }
 
-const loginData = {
-    nombre_usuario: usuarioAdminData.nombre_usuario,
-    password: usuarioAdminData.contrasena_hash
-};
-
-describe("CP-18: Admin modifica los datos y el rol de un usuario (RF-3.3)", () => {
+describe("CP-18: Admin modifica los datos de un usuario desde el servidor. (RF-3.3)", () => {
     let tokenLogin,
         usuarioEditorCreateResp;
 
-    // Se comienza con un usuario admin ya creado y con una empresa vinculada (distinto a usuario 'admin':'admin')
     beforeAll(async () => {
-        const usuarioCreateResp = await request(app)
-            .post("/empresas")
-            .send({usuario: usuarioAdminData, empresa: empresaAdminData});
-
-        expect(usuarioCreateResp.statusCode).toBe(201);
-
         const loginResp = await request(app)
             .post("/autenticacion/login")
             .send(loginData);
 
         tokenLogin = loginResp.body.token;
     });
+
+    afterAll(async () => tokenLogin = null);
     
     test("1. Usuario con rol de administrador crea un usuario con rol editor.", async () => {
         usuarioEditorCreateResp = await request(app)
@@ -74,5 +51,16 @@ describe("CP-18: Admin modifica los datos y el rol de un usuario (RF-3.3)", () =
 
         expect(usuarioEditorUpdateResp.statusCode).toBe(200);
 
+    });
+
+    test("3. Se inicia sesion con usuario editor actualizado", async () => {
+        const usuarioEditorLoginResp = await request(app)
+            .post("/autenticacion/login")
+            .send({
+                nombre_usuario: "Usuario Editor CP-18 Actualizado",
+                password: "Prueba789!actualizada"
+            });
+
+        expect(usuarioEditorLoginResp.statusCode).toBe(200);
     });
 });
