@@ -1,6 +1,14 @@
 BACKEND/node_modules
 FRONTEND/node_modules
 
+# Playwright
+FRONTEND/test-results
+FRONTEND/playwright-report
+FRONTEND/coverage
+FRONTEND/blob-report
+FRONTEND/playwright/.cache/
+FRONTEND/playwright/.auth/
+
 # Copiado desde: https://github.com/github/gitignore/blob/main/Node.gitignore 
 
 # Logs
