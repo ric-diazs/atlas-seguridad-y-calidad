@@ -1,6 +1,6 @@
 const request = require("supertest");
-const { pool } = require("../db");
-const app = require("../app");
+const { pool } = require("../src/db");
+const app = require("../src/app");
 
 describe("CP-09: Auditoría de acciones sobre clientes", () => {
   let tokenAdmin;
