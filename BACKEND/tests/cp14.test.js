@@ -37,7 +37,7 @@ describe("CP-14: Auditoría de subida de documentos", () => {
 
     afterAll(async () => pool.end());
 
-    test("Usuario crea un contrato con documento PDF adjunto", async () => {
+    test("Registra automáticamente en auditoría la subida de documento asociado a un contrato", async () => {
         contratoResp = await request(API)
             .post("/contratos")
             .set("Authorization", `Bearer ${loginToken}`)
